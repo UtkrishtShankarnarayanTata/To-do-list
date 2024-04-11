@@ -1,0 +1,56 @@
+class Task:
+    def __init__(self, name, priority, due_date=None, completed=False):
+        self.name = name
+        self.priority = priority
+        self.due_date = due_date
+        self.completed = completed
+
+    def __str__(self):
+        status = "Completed" if self.completed else "Pending"
+        return f"{self.name} - Priority: {self.priority}, Due Date: {self.due_date}, Status: {status}"
+
+class TaskManager:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, task):
+        self.tasks.append(task)
+
+    def remove_task(self, task_name):
+        self.tasks = [task for task in self.tasks if task.name != task_name]
+
+    def mark_completed(self, task_name):
+        for task in self.tasks:
+            if task.name == task_name:
+                task.completed = True
+
+    def list_tasks(self):
+        for task in self.tasks:
+            print(task)
+
+    def save_tasks(self, filename):
+        with open(filename, 'w') as file:
+            for task in self.tasks:
+                file.write(f"{task.name},{task.priority},{task.due_date},{task.completed}\n")
+
+    def load_tasks(self, filename):
+        with open(filename, 'r') as file:
+            for line in file:
+                name, priority, due_date, completed = line.strip().split(',')
+                due_date = None if due_date == 'None' else due_date
+                completed = completed == 'True'
+                self.tasks.append(Task(name, priority, due_date, completed))
+
+def main():
+    task_manager = TaskManager()
+
+    try:
+        task_manager.load_tasks("tasks.txt")
+    except FileNotFoundError:
+        pass
+
+    while True:
+        # Your main menu and user interaction code here
+
+if __name__ == "__main__":
+    main()
